@@ -41,7 +41,11 @@ class AlbumVC: UIViewController {
             try fetchedResultsController.performFetch()
             if fetchedResultsController.fetchedObjects?.count  == 0{
                 page = page + 1
-                PhotoHelper.getImagesUrls(lat: pin.latitude, long: pin.longitude,page:page) { (urls) in
+                PhotoHelper.getImagesUrls(lat: pin.latitude, long: pin.longitude,page:page) { (urls,error) in
+                    if let error = error {
+                        self.collectionView.showMessage(error)
+                        return
+                    }
                     for url in urls{
                         PhotoHelper.add(url: url,pin:self.pin,context: self.dataController.context)
                     }

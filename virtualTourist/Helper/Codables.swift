@@ -11,6 +11,7 @@ import Foundation
 
 struct AlbumResponse : Codable {
     var photos : Photos
+    var stat : String
 }
 
 struct Photos : Codable {

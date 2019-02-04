@@ -63,7 +63,7 @@ class PhotoHelper {
         }
     }
     
-    static func getImagesUrls(lat: Double, long: Double,page:Int, completion: @escaping ([String])->Void) {
+    static func getImagesUrls(lat: Double, long: Double,page:Int, completion: @escaping ([String],String?)->Void) {
         let param = FParams(latitude:lat,longitude:long,page:page)
         let url = param.getUrl()
         var images = [String]()
@@ -73,13 +73,20 @@ class PhotoHelper {
             switch response.result {
             case .failure(let error):
                 print(error)
-                completion([])
+                completion([],error.localizedDescription)
             case .success:
+                print(response)
                 let AlbumRes:AlbumResponse? = try? JSONDecoder().decode(AlbumResponse.self, from:response.data! )
-                for photo in (AlbumRes?.photos.photo)!{
-                    images.append(photo.url)
+                if(AlbumRes?.stat == "ok"){
+                    for photo in (AlbumRes?.photos.photo)!{
+                        images.append(photo.url)
+                    }
+                    completion(images,nil)
                 }
-                completion(images)
+                else {
+                   completion([],"Error during photos download")
+                }
+                
             }
         }
     }
